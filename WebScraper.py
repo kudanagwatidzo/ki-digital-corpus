@@ -18,27 +18,32 @@ def rename_last_downloaded_file(dummy_dir, destination_dir, new_file_name):
     shutil.move(get_last_downloaded_file_path(dummy_dir), os.path.join(destination_dir, new_file_name))
 
 # change to your own path
-download_folder = "/Users/kudan/Documents/GitHub/ki-digital-corpus/Data"
-dummy_folder = "/Users/kudan/Documents/GitHub/ki-digital-corpus/Dummy"
+download_folder = "C:\\Users\kudan\Documents\GitHub\ki-digital-corpus\Data"
+dummy_folder = "C:\\Users\kudan\Documents\GitHub\ki-digital-corpus\Dummy"
 
 options = webdriver.FirefoxOptions()
 options.set_preference("browser.download.folderList", 2)
-options.set_preference("browser.download.dir", dummy_folder)
 options.set_preference("browser.download.useDownloadDir", True)
+options.set_preference("browser.download.dir", dummy_folder)
 options.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf")
 options.set_preference("pdfjs.disabled", True)
 
 # change to your own path to the executable file
 driver = webdriver.Firefox(executable_path='/Users/kudan/Documents/GitHub/ki-digital-corpus/geckodriver-v0.32.0-win64/geckodriver', options=options)
 driver.maximize_window()
-driver.get("http://www.korea-copy.com/rodong/?sess=4CGS2kzopS2MB8cTnhYaY082zT4YEvz2SdEGWr3qkGU%3D")
+
+# Login to Harvard credentials and click one link
+# driver.get("http://nrs.harvard.edu/urn-3:hul.eresource:kpmxxxxx")
+# time.sleep(60)
+
+# Replace with current session link if it breaks
+driver.get("http://www.korea-copy.com/rodong/?sess=zxms7TcrAQLdr7KazBb%2BW6gdOloA5Noh84UnvKYY7t4%3D")
 time.sleep(5)
 
-entry_link = driver.find_element_by_xpath('/html/body/form/table/tbody/tr[2]/td[1]/table/tbody/tr[4]/td/a')
-entry_link.click()
-time.sleep(5)
+# entry_link = driver.find_element_by_xpath('/html/body/form/table/tbody/tr[2]/td[1]/table/tbody/tr[4]/td/a')
+# entry_link.click()
+# time.sleep(5)
 
-driver.switch_to.window(driver.window_handles[1])
 years = driver.find_elements_by_xpath('/html/body/div/div[4]/font/dl/a')
 
 

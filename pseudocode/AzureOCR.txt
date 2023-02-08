@@ -1,0 +1,15 @@
+Flow of Azure OCR Python Application
+1. Select documents for processing
+2. Extract Azure credentials securely
+3. Call Azure API to perform OCR on document
+4. Return success/error message based on if OCR JSON is received
+5. Preview JSON data visually
+6. Decide location to save results (remote or local)
+
+Potential Design of Application
+- GUI with a button for Viewer and Process
+- Viewer
+    - Select a file from local OR
+    - Select a file from a remote destination layout
+    - Display the text from the document along with an image preview
+    - Search bar

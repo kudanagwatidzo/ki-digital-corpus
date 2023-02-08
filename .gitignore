@@ -1,2 +1,8 @@
 
 geckodriver-v0.32.0-win64/geckodriver.exe
+*.pdf
+config.yaml
+geckodriver.log
+geckodriver.log
+geckodriver.log
+geckodriver.log
