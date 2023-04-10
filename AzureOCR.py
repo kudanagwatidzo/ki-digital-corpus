@@ -29,6 +29,42 @@ ENDPOINT = azure_config['ENDPOINT']
 azure_vision_client = ComputerVisionClient(ENDPOINT, CognitiveServicesCredentials(SUBSCRIPTION_KEY))
 document_analysis_client = DocumentAnalysisClient(endpoint=ENDPOINT, credential=AzureKeyCredential(SUBSCRIPTION_KEY))
 
+def processDocument(file):
+    with open(file, 'rb') as f:
+        poller = document_analysis_client.begin_analyze_document("prebuilt-read", document=f)
+    result = poller.result()
+
+    line_list = []
+    symbol_confidence_data = []
+    total_confidence = 0
+
+    for page in result.pages:
+        for line_idx, line in enumerate(page.lines):
+            line_obj = {
+                "page_number": page.page_number,
+                "line_number": line_idx,
+                "line_content": line.content,
+                "line_bounding_box": format_polygon(line.polygon)
+            }
+            line_list.append(line_obj)
+        for word in page.words:
+            total_confidence += word.confidence
+            symbol_confidence_data.append("\nPage: " + str(page.page_number) + ", Symbol: " + word.content + ", Confidence: " + str(word.confidence))
+
+    report_output = "Average Confidence Level: " + str(total_confidence / len(symbol_confidence_data)) + \
+        "\nTotal Number of Symbols: " + str(len(symbol_confidence_data) + "\n")
+    line_list_json = json.dumps(line_list, indent=4)
+
+    outputJson = os.path.splitext(os.path.basename(file))[0] + "_OCR_metadata.json"
+    outputReport = os.path.splitext(os.path.basename(file))[0] + "_OCR_report.txt"
+
+    with open(outputJson, "w") as f:
+        f.write(line_list_json)
+    with open(outputReport, "w", encoding="utf-8") as f:
+        f.write(report_output)
+        for item in symbol_confidence_data:
+            f.write(item)
+
 # Callback functions
 def listBoxCallback(event):
     # fileName = os.path.basename(files[i])
@@ -43,23 +79,7 @@ def processButtonCallback():
     print(selectedFiles)
     # Iterate through the selected files
     for file in selectedFiles:
-        with open(file, 'rb') as f:
-            poller = document_analysis_client.begin_analyze_document("prebuilt-read", document=f)
-        result = poller.result()
-        line_list = []
-        for page in result.pages:
-            for line_idx, line in enumerate(page.lines):
-                line_obj = {
-                    "page_number": page.page_number,
-                    "line_number": line_idx,
-                    "line_content": line.content,
-                    "line_bounding_box": format_polygon(line.polygon)
-                }
-                line_list.append(line_obj)
-        line_list_json = json.dumps(line_list, indent=4)
-        outputFile = os.path.splitext(os.path.basename(file))[0]  + ".json"
-        with open(outputFile, "w") as o:
-            o.write(line_list_json)
+        processDocument(file)
         tk.messagebox.showinfo("showinfo", "File Successfully Processed")
     # Re-enable process button once OCR is finished
     actionFrameBtn['state'] = 'active'

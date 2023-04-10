@@ -8,3 +8,7 @@ geckodriver.log
 geckodriver.log
 geckodriver.log
 geckodriver.log
+*.json
+*.log
+*.txt
+geckodriver.log
