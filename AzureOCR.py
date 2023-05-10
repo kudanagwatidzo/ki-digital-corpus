@@ -52,7 +52,7 @@ def processDocument(file):
             symbol_confidence_data.append("\nPage: " + str(page.page_number) + ", Symbol: " + word.content + ", Confidence: " + str(word.confidence))
 
     report_output = "Average Confidence Level: " + str(total_confidence / len(symbol_confidence_data)) + \
-        "\nTotal Number of Symbols: " + str(len(symbol_confidence_data) + "\n")
+        "\nTotal Number of Symbols: " + str(len(symbol_confidence_data)) + "\n"
     line_list_json = json.dumps(line_list, indent=4)
 
     outputJson = os.path.splitext(os.path.basename(file))[0] + "_OCR_metadata.json"
